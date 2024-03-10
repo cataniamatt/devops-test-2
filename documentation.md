@@ -3,7 +3,7 @@
 ## Client
 
 ## Server
-The backend nodejs application will be deployed inside a Kubernetes cluster, this application will connect to an Azure CosmosDb database for persistent NoSQL data storage. The Kubernetes deployment creates a namespace called "server-namespace" and deploys the server application using a Deployment and a Service within that namespace. The Deployment ensures three replicas of the web application are running, using a container image that is pulled from an Azure Container Registry. The application runs on port 3000 but the service exposes it internally within the cluster on port 80. An Ingress resource is also configured to route external traffic to the web application through an Azure Application Gateway, specifying the backend service as "webapp" on port 80.
+The backend nodejs application will be deployed inside a Kubernetes cluster, this application will connect to an Azure CosmosDb database for persistent NoSQL data storage. The Kubernetes deployment creates a namespace called "server-namespace" and deploys the server application using a Deployment and a Service within that namespace. The Deployment ensures three replicas of the web application are running, using a container image that is pulled from an Azure Container Registry. The application runs on port 3000 but the service exposes it internally within the cluster on port 80. An Ingress resource is also configured to route external traffic to the web application through an Azure Application Gateway, specifying the backend service as "serverapp" on port 80.
 
 ## Infrastructure:
 * Resource group
