@@ -3,7 +3,7 @@
 ## Client
 
 ## Server
-The backend nodejs application will be deployed inside a Kubernetes cluster, this application will connect to an external MongoDB database for persistent NoSQL data storage. The Kubernetes deployment creates a namespace called "server-namespace" and deploys the server application using a Deployment and a Service within that namespace. The Deployment ensures three replicas of the web application are running, using a container image that is pulled from an Azure Container Registry. The application runs on port 3000 but the service exposes it internally within the cluster on port 80. An Ingress resource is also configured to route external traffic to the web application through an Azure Application Gateway, specifying the backend service as "serverapp" on port 80. The AGW uses the "/livez" path as the load balancing health probe, the response of this API was altered to output the hostname to validate the load balancing.
+The backend nodejs application will be deployed inside a Kubernetes cluster, this application will connect to an external MongoDB database for persistent NoSQL data storage. An enternal database was used as it removes the management overhead and is more scalable than deploying it in side the cluster. As a best practice, stateful or persistent data should be kept outside of Kubernetes, managing this in Kubernetes can become very complicated. The Kubernetes deployment creates a namespace called "server-namespace" and deploys the server application using a Deployment and a Service within that namespace. The Deployment ensures three replicas of the web application are running, using a container image that is pulled from an Azure Container Registry. The application runs on port 3000 but the service exposes it internally within the cluster on port 80. An Ingress resource is also configured to route external traffic to the web application through an Azure Application Gateway, specifying the backend service as "serverapp" on port 80. The AGW uses the "/livez" path as the load balancing health probe, the response of this API was altered to output the hostname to validate the load balancing.
 
 ## Infrastructure:
 The Terraform state file will be saved in a dedicated blob storage account. To avoid a potential situation where the state file is accidentally deleted, the storage account should have a delete lock configured on it outside of Terraform. With a proper source control process for managing the code and an IaC deployment pipeline that uses approval stages for deploying code, this issue with the state file should never happen, however, it is always better to be safe. An alternative would be to exclude the storage account IaC code from the Terraform configuration and state.
@@ -18,6 +18,9 @@ Below is a list of all infrastructure resources created:
 * MongoDb Cloud
 
 ## Tools used:
+Since any cloud provider can be used, the Microsoft Azure cloud service and stack was used as I already have a test environment available.
+
+Below is a list of all tools used:
 * Azure Cloud
 * Azure DevOps
 * Terraform
