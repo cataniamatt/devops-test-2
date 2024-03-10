@@ -1,53 +1,41 @@
-# Cloud Engineer assignment
-A Cloud Engineer is responsible for the design, management, and maintenance of a cloud infrastructure. 
-You have multiple roles and needs toghether with a well-rounded knowledge of software development, scripting languages and a background in designing services in the cloud
+# Project Documentation
 
-## Intro
+## Server
+The backend nodejs application will be deployed inside a Kubernetes cluster, this application will connect to an external MongoDB database for persistent NoSQL data storage. An enternal database was used as it removes the management overhead and is more scalable than deploying it in side the cluster. As a best practice, stateful or persistent data should be kept outside of Kubernetes, managing this in Kubernetes can become very complicated. The Kubernetes deployment creates a namespace called "server-namespace" and deploys the server application using a Deployment and a Service within that namespace. The Deployment ensures three replicas of the web application are running, using a container image that is pulled from an Azure Container Registry. The application runs on port 3000 but the service exposes it internally within the cluster on port 80. An Ingress resource is also configured to route external traffic to the web application through an Azure Application Gateway, specifying the backend service as "serverapp" on port 80. The AGW uses the "/livez" path as the load balancing health probe, the response of this API was altered to output the hostname to validate the load balancing. A custom domain for the backend server has been estabilished with SSL encryption, this is https://api.matthewcatania.com. The "livez" API can be visited [here](https://api.matthewcatania.com/livez).
 
-Once again we thank you for your interest in our company and in the job we are offering. Now it's time for you to show us your best skills. 
-Use this opportunity in a professional and wise manner. The main goal of this evaluation is to determine your potential, not flaws: we don't expect everybody to excel at everything. 
+## Client
+The frontend static page is hosted inside an Azure Storage Account as a static website. This was chosen due to the high availability, low response times, and scalability provided by Azure Storage. The static files for this page are served through an Azure CDN profile. This CDN profile is accessible on this endpoint: [https://matthewcatania.azureedge.net](https://matthewcatania.azureedge.net). Upon every update to the clientside application, the CDN content should be purged so that the latest changes start being served.
 
-If you have a doubt or our requirements are not clear enough please let us know and we will do our best to give you all the information you need and put you in a position to express all your talents. Last but not least, with this assignment we aim to assess not only your technical skills but also your soft skills and communication is one of the most important. Don’t forget it
+## Infrastructure:
+The Terraform state file will be saved in a dedicated blob storage account. To avoid a potential situation where the state file is accidentally deleted, the storage account should have a delete lock configured on it outside of Terraform. With a proper source control process for managing the code and an IaC deployment pipeline that uses approval stages for deploying code, this issue with the state file should never happen, however, it is always better to be safe. An alternative would be to exclude the storage account IaC code from the Terraform configuration and state.
 
+The resources deployed shall follow this naming convention: **{resource type}-{service name}-{environment}-{location}-\[number\]**. The resource type should be an abbreviation for the resoruce type as described in the official microsoft documentation [here](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations).
 
-## Start
-As usual our developers created some components and your job it to deploy them in the cloud.
-Today we are kindly asking you to containerize and deploy the following components:
+Below is a list of all infrastructure resources created:
+* Resource group
+* AKS Cluster with 1 node pool
+* Azure Container Registry
+* IAM Role Assignment
+* MongoDb Cloud
 
-* `client`: a web client that displays the data 
-* `server`: an API that fetches persisted information and returns it to the web client
+## Tools used:
+Since any cloud provider can be used, the Microsoft Azure cloud service and stack was used as I already have a test environment available.
 
-## Requirements
-Your solution has to meet the following criteria:
+Below is a list of all tools used:
+* Azure Cloud
+* Azure DevOps
+* Terraform
+* Kubernetes
+* Docker
+* Github
+* MongoDb Cloud
 
-* The `client` is deployed on a CDN. Read client [README](src/client/README.md) file to get more details on how to compile the project and get the bundle that has to uploaded to CDN you think works best for this solution
-* There must be more than one instance of the `server` API, ideally using Docker and Kubernetes. We provided you a [Dockerfile](src/server/Dockerfile) that you should consider the starting point.
-* The `database` is hosted in secure and fault tolerance manner. Using a 3rd party provider is okay as long as can explain why you are using it. Pass the MONGO_URL environment variable to the `server` service. For your info https://cloud.mongodb.com/ has a free tier. 
-* A continuous integration pipeline(s) is in place to deploy changes
-
-## Finish
-Your finished project should be delivered as:
-
-### Code
-Complete the provided code (using the folder structure you think is best) with the infrastructure as code you think is required to complete this assignment. Publish your code in a **private** github repository and give us access to it.
-
-### Cloud environment
-Deploy the above mentioned components in a public cloud (choose the one you prefer)
-The app should be fully functional.
-
-### Continuous integration
-Setup a continuous integration pipeline so that every time a change is published in the above mentioned git repository the *Cloud environment* is update automatically. Saved data can't be impacted by a deployment.
-
-
-## Assessment
-Here below an list of criteria we are going to use to assess your work:
-* Scalability and fault tolerance
-* Testability of your solution 
-* Different design patterns applied
-* Performance considerations taken
-* Error handling, debugging and logging
-* Attention to details
-
-Be prepared to talk about
-* Why did you do what you did, how you did it, and how long it took
-* Talk about the tech stack and any services used in your project and why you chose them 
+## Future improvements:
+* Separate infrastructure and application code into separate repositories. This will allow proper segregation of permissions between the different development and operations teams.
+* Create an IaC deployment pipeline for a safe and consistent infrastructure deployment process. This pipeline should have three stages, the plan, approval, and then the apply stage.
+* Use self-hosted CI/CD Linux agents instead of provider hosted to improve security and have faster image builds due to Docker cache.
+* Automated tests should be integrated in the application build and release process.
+* A rollback mechanism should be added to the pipelines.
+* The IaC code implemented has been modularised a bit, however, further modularisation is required to eventually have the resources declared as a JSON object. This would reduce code repetition and improve code organisaiton.
+* Create a proper network structure, with edge security, and close public access on all resources. 
+* The MongoDB connection string is currently hardcoded in the pipeline, this is not safe as the secret will be present in the git repository. This connection string should be stored in a key vault and pulled dynamically when the pipeline runs. The secret can also be pulled from a key vault dynamically instead of it being added by the pipeline.
