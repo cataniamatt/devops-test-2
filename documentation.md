@@ -15,7 +15,7 @@ Below is a list of all infrastructure resources created:
 * AKS Cluster with 1 node pool
 * Azure Container Registry
 * IAM Role Assignment
-* Azure CosmosDb database
+* MongoDb Cloud
 
 ## Tools used:
 * Azure Cloud
