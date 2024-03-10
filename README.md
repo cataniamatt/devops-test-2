@@ -6,7 +6,7 @@ The backend nodejs application will be deployed inside a Kubernetes cluster, thi
 ## Client
 The frontend static page is hosted inside an Azure Storage Account as a static website. This was chosen due to the high availability, low response times, and scalability provided by Azure Storage. The static files for this page are served through an Azure CDN profile. This CDN profile is accessible on this endpoint: [https://matthewcatania.azureedge.net](https://matthewcatania.azureedge.net). Upon every update to the clientside application, the CDN content should be purged so that the latest changes start being served.
 
-## Infrastructure:
+## Infrastructure
 The Terraform state file will be saved in a dedicated blob storage account. To avoid a potential situation where the state file is accidentally deleted, the storage account should have a delete lock configured on it outside of Terraform. With a proper source control process for managing the code and an IaC deployment pipeline that uses approval stages for deploying code, this issue with the state file should never happen, however, it is always better to be safe. An alternative would be to exclude the storage account IaC code from the Terraform configuration and state.
 
 The resources deployed shall follow this naming convention: **{resource type}-{service name}-{environment}-{location}-\[number\]**. The resource type should be an abbreviation for the resoruce type as described in the official microsoft documentation [here](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations).
@@ -18,7 +18,7 @@ Below is a list of all infrastructure resources created:
 * IAM Role Assignment
 * MongoDb Cloud
 
-## Tools used:
+## Tools
 Since any cloud provider can be used, the Microsoft Azure cloud service and stack was used as I already have a test environment available.
 
 Below is a list of all tools used:
@@ -30,7 +30,7 @@ Below is a list of all tools used:
 * Github
 * MongoDb Cloud
 
-## Future improvements:
+## Future improvements
 * Separate infrastructure and application code into separate repositories. This will allow proper segregation of permissions between the different development and operations teams.
 * Create an IaC deployment pipeline for a safe and consistent infrastructure deployment process. This pipeline should have three stages, the plan, approval, and then the apply stage.
 * Use self-hosted CI/CD Linux agents instead of provider hosted to improve security and have faster image builds due to Docker cache.
