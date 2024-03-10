@@ -4,12 +4,12 @@ trigger:
       - release/*
 
 pool:
-  vmImage: "ubuntu-latest"
+  vmImage: "windows-latest"
 
 jobs:
   - job:
     pool:
-      vmImage: ubuntu-latest
+      vmImage: windows-latest
     displayName: Build and Deploy
     steps:
     - checkout: self
@@ -19,7 +19,18 @@ jobs:
         versionSpec: "14.x"
       displayName: "Install Node.js"
 
-    - bash: |
+    - script: |
+        cd src/client
         npm install
         npm run build
-      displayName: "Build App"
+      displayName: "Build"
+
+    - task: AzureFileCopy@5
+      inputs:
+        SourcePath: 'src/client/build/*'
+        azureSubscription: 'NR PMP DEVQA (21191caf-8a0a-4a0f-b34d-afae216ee5b3)'
+        Destination: 'AzureBlob'
+        storage: stmcataniatestwesteu
+        ContainerName: '$web'
+        AdditionalArgumentsForBlobCopy: '--recursive=true'
+      displayName: "Deploy"
