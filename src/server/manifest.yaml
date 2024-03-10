@@ -85,5 +85,3 @@ spec:
             name: serverapp
             port: 
               number: 80
-            
-
