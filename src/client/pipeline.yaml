@@ -1,0 +1,25 @@
+trigger:
+  branches:
+    include:
+      - release/*
+
+pool:
+  vmImage: "ubuntu-latest"
+
+jobs:
+  - job:
+    pool:
+      vmImage: ubuntu-latest
+    displayName: Build and Deploy
+    steps:
+    - checkout: self
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: "14.x"
+      displayName: "Install Node.js"
+
+    - bash: |
+        npm install
+        npm run build
+      displayName: "Build App"
