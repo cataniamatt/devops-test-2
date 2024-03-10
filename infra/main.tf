@@ -14,6 +14,21 @@ module "st_terraform" {
   containers                    = ["tf-mcatania-container"]
 }
 
+module "st_clientside" {
+  source                        = "./modules/storage-account"
+  name                          = "stmcatania${var.env}${var.loc}"
+  location                      = azurerm_resource_group.rg.location
+  resource_group_name           = azurerm_resource_group.rg.name
+  account_tier                  = "Standard"
+  account_replication_type      = "GRS"
+  public_network_access_enabled = true
+  static_website = [
+    {
+      index_document = "index.html"
+    }
+  ]
+}
+
 resource "azurerm_container_registry" "acr" {
   name                = "acrmcatania${var.env}${var.loc}"
   resource_group_name = azurerm_resource_group.rg.name

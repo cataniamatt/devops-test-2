@@ -28,3 +28,9 @@ variable "tables" {
   type = list(string)
   default = []
 }
+variable "static_website" {
+  type = list(object({
+    index_document     = string
+  }))
+  default = []
+}

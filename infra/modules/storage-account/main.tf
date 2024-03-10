@@ -5,6 +5,12 @@ resource "azurerm_storage_account" "st" {
   account_tier                  = var.account_tier
   account_replication_type      = var.account_replication_type
   public_network_access_enabled = var.public_network_access_enabled
+  dynamic "static_website" {
+    for_each = var.static_website
+    content {
+      index_document     = static_website.value.index_document
+    }
+  }
 }
 
 resource "azurerm_storage_container" "container" {
