@@ -1,0 +1,29 @@
+trigger:
+  branches:
+    include:
+      - release/*
+      
+jobs:
+  - job:
+    pool:
+      vmImage: ubuntu-latest
+    displayName: Build and Deploy
+    steps:
+    - checkout: self
+
+    - task: Docker@0
+      displayName: 'Build image'
+      inputs:
+        azureSubscription: 'NR PMP DEVQA (21191caf-8a0a-4a0f-b34d-afae216ee5b3)'
+        azureContainerRegistry: '{"loginServer":"acrmcataniatestwesteu.azurecr.io", "id" : "/subscriptions/21191caf-8a0a-4a0f-b34d-afae216ee5b3/resourceGroups/rg-mcatania-test-westeu/providers/Microsoft.ContainerRegistry/registries/acrmcataniatestwesteu"}'
+        action: Build an image
+        dockerFile: '**/Dockerfile'
+        imageName: '$(Build.Repository.Name):$(Build.BuildId)'
+
+    - task: Docker@0
+      displayName: 'Push image'
+      inputs:
+        azureSubscription: 'NR PMP DEVQA (21191caf-8a0a-4a0f-b34d-afae216ee5b3)'
+        azureContainerRegistry: '{"loginServer":"acrmcataniatestwesteu.azurecr.io", "id" : "/subscriptions/21191caf-8a0a-4a0f-b34d-afae216ee5b3/resourceGroups/rg-mcatania-test-westeu/providers/Microsoft.ContainerRegistry/registries/acrmcataniatestwesteu"}'
+        action: Push an image
+        imageName: '$(Build.Repository.Name):$(Build.BuildId)'
