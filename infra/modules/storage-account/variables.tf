@@ -16,30 +16,6 @@ variable "account_replication_type" {
 variable "public_network_access_enabled" {
   type = bool
 }
-variable "private_endpoint_subnet_id" {
-  type    = string
-  default = "0"
-}
-variable "pe_blob" {
-  type    = bool
-  default = false
-}
-variable "pe_file" {
-  type    = bool
-  default = false
-}
-variable "pe_queue" {
-  type    = bool
-  default = false
-}
-variable "pe_table" {
-  type    = bool
-  default = false
-}
-variable "pe_dfs" {
-  type    = bool
-  default = false
-}
 variable "containers" {
   type = list(string)
   default = []

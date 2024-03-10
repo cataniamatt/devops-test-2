@@ -7,20 +7,6 @@ resource "azurerm_storage_account" "st" {
   public_network_access_enabled = var.public_network_access_enabled
 }
 
-module "pe_st" {
-  source               = "../private-endpoints-storage"
-  storage_account_name = azurerm_storage_account.st.name
-  storage_account_id   = azurerm_storage_account.st.id
-  resource_group_name  = azurerm_storage_account.st.resource_group_name
-  location             = azurerm_storage_account.st.location
-  subnet_id            = var.private_endpoint_subnet_id
-  blob                 = var.pe_blob
-  file                 = var.pe_file
-  queue                = var.pe_queue
-  table                = var.pe_table
-  dfs                  = var.pe_dfs
-}
-
 resource "azurerm_storage_container" "container" {
   for_each              = { for idx, container in var.containers : container => container }
   name                  = each.value
