@@ -41,6 +41,9 @@ spec:
         image: '#{ContainerRegistry}#/mcatania:#{ImageTag}#'
         ports:
         - containerPort: 3000
+        env:
+        - name: MONGO_URL
+          value: '#{MongoConnString}#'
 
 ---
 
