@@ -32,9 +32,10 @@ jobs:
         find . -type f -name "manifest.yaml" -exec sed -i "s/#{ContainerRegistry}#/acrmcataniatestwesteu.azurecr.io/g; s/#{ImageTag}#/$(Build.BuildId)/g" {} \;
       workingDirectory: 'src/server'
       displayName: 'Update manifest with image version'
-
+    
     - bash: |
-        find . -type f -name "manifest.yaml" -exec sed -i "s/#{MongoConnString}#/mongodb+srv:\/\/matthewcatania:zFBTlJGEgXoKhH4S@cluster0.qdbd55u.mongodb.net\/?retryWrites=true\&w=majority/g" {} \;
+        MONGO_URL=$(echo -n "mongodb+srv://matthewcatania:zFBTlJGEgXoKhH4S@cluster0.qdbd55u.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0" | base64)
+        find . -type f -name "manifest.yaml" -exec sed -i "s/#{MongoConnString}#/$MONGO_URL/g" {} \;
       workingDirectory: 'src/server'
       displayName: 'Update manifest with MongoDB connection string'
     

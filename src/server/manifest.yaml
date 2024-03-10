@@ -21,6 +21,17 @@ spec:
 
 ---
 
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: server-namespace
+  name: mongo
+type: Opaque
+data:
+  MONGO_URL: #{MongoConnString}#
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -43,7 +54,10 @@ spec:
         - containerPort: 3000
         env:
         - name: MONGO_URL
-          value: '#{MongoConnString}#'
+          valueFrom:
+            secretKeyRef:
+              name: mongo
+              key: MONGO_URL
 
 ---
 
