@@ -40,4 +40,4 @@ jobs:
         azureSubscription: 'NR PMP DEVQA (21191caf-8a0a-4a0f-b34d-afae216ee5b3)'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
-        inlineScript: 'az cdn endpoint purge -g rg-mcatania-test-westeu -n matthewcatania --profile-name matthewcataniatestcdn --content-paths ''/*'''
+        inlineScript: 'az cdn endpoint purge -g rg-mcatania-test-westeu -n matthewcatania --profile-name cdnp-mcatania-test-global --content-paths ''/*'''

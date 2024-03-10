@@ -36,5 +36,6 @@ Below is a list of all tools used:
 * Use self-hosted CI/CD Linux agents instead of provider hosted to improve security and have faster image builds due to Docker cache.
 * Automated tests should be integrated in the application build and release process.
 * A rollback mechanism should be added to the pipelines.
+* The IaC code implemented has been modularised a bit, however, further modularisation is required to eventually have the resources declared as a JSON object. This would reduce code repetition and improve code organisaiton.
 * Create a proper network structure, with edge security, and close public access on all resources. 
 * The MongoDB connection string is currently hardcoded in the pipeline, this is not safe as the secret will be present in the git repository. This connection string should be stored in a key vault and pulled dynamically when the pipeline runs. The secret can also be pulled from a key vault dynamically instead of it being added by the pipeline.
