@@ -3,6 +3,7 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
+# Infrastructure
 module "st_terraform" {
   source                        = "./modules/storage-account"
   name                          = "stmcataniatf${var.env}${var.loc}"
@@ -14,6 +15,7 @@ module "st_terraform" {
   containers                    = ["tf-mcatania-container"]
 }
 
+# Clientside
 module "st_clientside" {
   source                        = "./modules/storage-account"
   name                          = "stmcatania${var.env}${var.loc}"
@@ -29,6 +31,7 @@ module "st_clientside" {
   ]
 }
 
+# Serverside
 resource "azurerm_container_registry" "acr" {
   name                = "acrmcatania${var.env}${var.loc}"
   resource_group_name = azurerm_resource_group.rg.name
@@ -43,4 +46,23 @@ module "aks" {
   location            = azurerm_resource_group.rg.location
   dns_prefix          = "mcatania"
   acr_id              = azurerm_container_registry.acr.id
+}
+
+# CDN
+resource "azurerm_cdn_profile" "cdn" {
+  name                = "cdnp-mcatania-${var.env}-global"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku                 = "Standard_Verizon"
+}
+
+resource "azurerm_cdn_endpoint" "endpoint" {
+  name                = "matthewcatania"
+  profile_name        = azurerm_cdn_profile.cdn.name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  origin {
+    name      = "default"
+    host_name = "stmcataniatestwesteu.z6.web.core.windows.net"
+  }
 }
