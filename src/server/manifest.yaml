@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: server-namespace
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: server-namespace
+  name: serverapp
+spec:
+  selector:
+    app: serverapp
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  type: ClusterIP
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: server-namespace
+  name: serverapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: serverapp
+  template:
+    metadata:
+      labels:
+        app: serverapp
+    spec:
+      containers:
+      - name: serverapp
+        image: '#{ContainerRegistry}#/mcatania:#{ImageTag}#'
+        ports:
+        - containerPort: 3000
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: server-namespace
+  name: azure-agw-ingress
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /*
+        pathType: Prefix
+        backend:
+          service:
+            name: serverapp
+            port: 
+              number: 80
+

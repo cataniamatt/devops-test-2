@@ -27,3 +27,17 @@ jobs:
         azureContainerRegistry: '{"loginServer":"acrmcataniatestwesteu.azurecr.io", "id" : "/subscriptions/21191caf-8a0a-4a0f-b34d-afae216ee5b3/resourceGroups/rg-mcatania-test-westeu/providers/Microsoft.ContainerRegistry/registries/acrmcataniatestwesteu"}'
         action: Push an image
         imageName: '$(Build.Repository.Name):$(Build.BuildId)'
+
+    - bash: |
+        find . -type f -name "*manifest.yaml" -exec sed -i "s/#{ContainerRegistry}#/acrmcataniatestwesteu.azurecr.io/g; s/#{ImageTag}#/$(Build.BuildId)/g" {} \;
+      workingDirectory: app
+      displayName: 'Update manifest with image version'
+    
+    - task: KubernetesManifest@1
+      displayName: 'Deploy latest image'
+      inputs:
+        action: 'deploy'
+        connectionType: 'kubernetesServiceConnection'
+        kubernetesServiceConnection: 'aks-mcatania-test'
+        namespace: 'server-namespace'
+        manifests: 'src/server/manifest.yaml'
