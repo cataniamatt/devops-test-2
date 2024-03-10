@@ -29,3 +29,4 @@ Below is a list of all infrastructure resources created:
 * Separate infrastructure and application code into separate repositories. This will allow proper segregation of permissions between the different development and operations teams.
 * Create an IaC deployment pipeline for a safe and consistent infrastructure deployment process. This pipeline should have three stages, the plan, approval, and then the apply stage.
 * Use self-hosted CI/CD Linux agents instead of provider hosted to improve security and have faster image builds due to Docker cache.
+* Create a proper network structure and close public access on all resources.
