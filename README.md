@@ -1,4 +1,5 @@
 # Project Documentation
+> :warning: **Infrastructure has been decomissioned**
 
 ## Client
 The frontend static page is hosted within an Azure Storage Account as a static website, selected for its robust high availability, rapid response times, and scalable infrastructure provided by Azure Storage. These static files are distributed via an Azure CDN profile, accessible at https://matthewcatania.azureedge.net. Since the application only has static files served through CDN, no server is required. To ensure the latest changes are promptly reflected, the CDN content is purged upon every update to the clientside application. This process is automated through the application's CI/CD pipeline, which triggers whenever a new branch prefixed with "release/" is created and pushed.
